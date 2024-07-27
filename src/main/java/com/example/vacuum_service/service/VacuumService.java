@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface VacuumService {
     List<Vacuum> getAllVacuums();
-    Vacuum createVacuum(CreateVacuumDto createVacuumDto);
+    Vacuum addVacuum(CreateVacuumDto createVacuumDto);
 }

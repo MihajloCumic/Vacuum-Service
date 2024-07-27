@@ -21,9 +21,14 @@ public class VacuumController {
         return ResponseEntity.ok(vacuumService.getAllVacuums());
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<Vacuum> createVacuum(@RequestBody CreateVacuumDto createVacuumDto){
-        return ResponseEntity.ok(vacuumService.createVacuum(createVacuumDto));
+    @GetMapping("/search")
+    public ResponseEntity<List<Vacuum>> searchVacuums(){
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<Vacuum> addVacuum(@RequestBody CreateVacuumDto createVacuumDto){
+        return ResponseEntity.ok(vacuumService.addVacuum(createVacuumDto));
     }
 
 }

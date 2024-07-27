@@ -20,7 +20,7 @@ public class VacuumServiceImpl implements VacuumService {
     }
 
     @Override
-    public Vacuum createVacuum(CreateVacuumDto createVacuumDto) {
+    public Vacuum addVacuum(CreateVacuumDto createVacuumDto) {
         Vacuum vacuum = new Vacuum();
         vacuum.setVacuumStatus(VacuumStatus.OFF);
         vacuum.setAddedBy(createVacuumDto.getAddedBy());
