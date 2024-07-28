@@ -2,6 +2,8 @@ package com.example.vacuum_service.entities;
 
 import com.example.vacuum_service.entities.enums.VacuumStatus;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -15,7 +17,9 @@ public class Vacuum {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    @Column(nullable = false)
+    @NotBlank
+    private String name;
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private VacuumStatus vacuumStatus;
@@ -27,5 +31,5 @@ public class Vacuum {
     private Boolean active;
 
     @CreatedDate
-    private Instant createdTimestamp;
+    private Long createdTimestamp;
 }

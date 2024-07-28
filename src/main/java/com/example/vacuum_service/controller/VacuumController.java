@@ -1,7 +1,7 @@
 package com.example.vacuum_service.controller;
 
 import com.example.vacuum_service.dto.CreateVacuumDto;
-import com.example.vacuum_service.entities.Vacuum;
+import com.example.vacuum_service.dto.VacuumDto;
 import com.example.vacuum_service.service.VacuumService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,17 +17,17 @@ public class VacuumController {
     private final VacuumService vacuumService;
 
     @GetMapping("/get-all")
-    public ResponseEntity<List<Vacuum>> getAllVacuums(){
+    public ResponseEntity<List<VacuumDto>> getAllVacuums(){
         return ResponseEntity.ok(vacuumService.getAllVacuums());
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<Vacuum>> searchVacuums(){
+    public ResponseEntity<List<VacuumDto>> searchVacuums(){
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Vacuum> addVacuum(@RequestBody CreateVacuumDto createVacuumDto){
+    public ResponseEntity<VacuumDto> addVacuum(@RequestBody CreateVacuumDto createVacuumDto){
         return ResponseEntity.ok(vacuumService.addVacuum(createVacuumDto));
     }
 

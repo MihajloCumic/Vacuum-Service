@@ -1,17 +1,19 @@
 package com.example.vacuum_service.dto;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+
+import com.example.vacuum_service.entities.enums.VacuumStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateVacuumDto {
-    @NotBlank
+public class VacuumDto {
+    private Long id;
     private String name;
-    @NotNull
+    private VacuumStatus vacuumStatus;
     private Long addedBy;
     private Boolean active;
+    private Long createdTimestamp;
 }
