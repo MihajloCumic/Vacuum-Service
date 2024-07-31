@@ -8,10 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateVacuumDto {
+public class AddVacuumDto {
     @NotBlank
     private String name;
-    @NotNull
-    private Long addedBy;
-    private Boolean active;
 }

@@ -1,6 +1,6 @@
 package com.example.vacuum_service.service.impl;
 
-import com.example.vacuum_service.dto.CreateVacuumDto;
+import com.example.vacuum_service.dto.AddVacuumDto;
 import com.example.vacuum_service.dto.SearchParamsDto;
 import com.example.vacuum_service.dto.VacuumDto;
 import com.example.vacuum_service.entities.Vacuum;
@@ -11,7 +11,6 @@ import com.example.vacuum_service.service.VacuumService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,12 +25,12 @@ public class VacuumServiceImpl implements VacuumService {
     }
 
     @Override
-    public VacuumDto addVacuum(CreateVacuumDto createVacuumDto) {
+    public VacuumDto addVacuum(AddVacuumDto addVacuumDto) {
         Vacuum vacuum = new Vacuum();
-        vacuum.setName(createVacuumDto.getName());
+        vacuum.setName(addVacuumDto.getName());
         vacuum.setVacuumStatus(VacuumStatus.STOPPED);
-        vacuum.setAddedBy(createVacuumDto.getAddedBy());
-        vacuum.setActive(createVacuumDto.getActive());
+        vacuum.setAddedBy(1L);
+        vacuum.setActive(true);
         return vacuumDtoMapper.vacuumToDto(vacuumRepository.save(vacuum));
     }
 
@@ -43,5 +42,12 @@ public class VacuumServiceImpl implements VacuumService {
         }
         return vacuumRepository.searchVacuums(searchParamsDto.getName(), searchParamsDto.getStatuses(), searchParamsDto.getDateFrom(), searchParamsDto.getDateTo())
                 .stream().map(vacuumDtoMapper::vacuumToDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public void removeVacuum(Long id) {
+        Vacuum vacuum = vacuumRepository.findById(id).orElseThrow(() -> new RuntimeException("Vacuum with id: " + id + "does not exist."));
+        vacuum.setActive(false);
+        vacuumRepository.save(vacuum);
     }
 }
