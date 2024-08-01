@@ -21,7 +21,7 @@ public class VacuumServiceImpl implements VacuumService {
     private final VacuumDtoMapper vacuumDtoMapper;
     @Override
     public List<VacuumDto> getAllVacuums() {
-        return vacuumRepository.findAll().stream().map(vacuumDtoMapper::vacuumToDto).collect(Collectors.toList());
+        return vacuumRepository.findAllByActiveTrue().stream().map(vacuumDtoMapper::vacuumToDto).collect(Collectors.toList());
     }
 
     @Override
@@ -46,7 +46,7 @@ public class VacuumServiceImpl implements VacuumService {
 
     @Override
     public void removeVacuum(Long id) {
-        Vacuum vacuum = vacuumRepository.findById(id).orElseThrow(() -> new RuntimeException("Vacuum with id: " + id + "does not exist."));
+        Vacuum vacuum = vacuumRepository.findByIdAndActiveTrue(id).orElseThrow(() -> new RuntimeException("Vacuum with id: " + id + "does not exist."));
         vacuum.setActive(false);
         vacuumRepository.save(vacuum);
     }
