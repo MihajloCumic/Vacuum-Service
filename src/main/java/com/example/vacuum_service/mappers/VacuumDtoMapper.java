@@ -10,9 +10,10 @@ public class VacuumDtoMapper {
         vacuumDto.setId(vacuum.getId());
         vacuumDto.setName(vacuum.getName());
         vacuumDto.setVacuumStatus(vacuum.getVacuumStatus());
-        vacuumDto.setAddedBy(vacuumDto.getAddedBy());
+        vacuumDto.setAddedBy(vacuum.getAddedBy());
         vacuumDto.setActive(vacuum.getActive());
         vacuumDto.setCreatedTimestamp(vacuum.getCreatedTimestamp());
+        vacuumDto.setStartStopCount(vacuum.getStartStopCount());
         return vacuumDto;
     }
 }

@@ -33,8 +33,26 @@ public class VacuumController {
         return ResponseEntity.ok(vacuumService.addVacuum(addVacuumDto));
     }
 
+    @PostMapping("/start/{id}")
+    public ResponseEntity<Void> startVacuum(@PathVariable Long id){
+        vacuumService.startVacuum(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/stop/{id}")
+    public ResponseEntity<Void> stopVacuum(@PathVariable Long id){
+        vacuumService.stopVacuum(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/discharge/{id}")
+    public ResponseEntity<Void> dischargeVacuum(@PathVariable Long id){
+        return ResponseEntity.ok().build();
+    }
+
     @DeleteMapping("/remove/{id}")
     public ResponseEntity<Void> removeVacuum(@PathVariable Long id){
+        vacuumService.removeVacuum(id);
         return ResponseEntity.ok().build();
     }
 

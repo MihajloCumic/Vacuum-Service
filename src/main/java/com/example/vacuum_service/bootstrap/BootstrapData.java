@@ -29,7 +29,7 @@ public class BootstrapData implements CommandLineRunner {
             vacuum.setName(name);
             vacuum.setAddedBy((long) (random.nextInt(3) + 1));
             vacuum.setVacuumStatus(VacuumStatus.STOPPED);
-            vacuum.setActive(false);
+            vacuum.setActive(true);
             vacuumRepository.save(vacuum);
         }
     }

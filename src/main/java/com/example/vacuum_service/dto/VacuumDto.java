@@ -16,4 +16,5 @@ public class VacuumDto {
     private Long addedBy;
     private Boolean active;
     private Long createdTimestamp;
+    private Integer startStopCount;
 }

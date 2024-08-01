@@ -1,7 +1,9 @@
 package com.example.vacuum_service.repository;
 
 import com.example.vacuum_service.entities.Vacuum;
+import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -14,6 +16,10 @@ public interface VacuumRepository extends JpaRepository<Vacuum, Long> {
 
     List<Vacuum> findAllByActiveTrue();
     Optional<Vacuum> findByIdAndActiveTrue(Long id);
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT v FROM Vacuum v WHERE v.id = :id AND v.active IS TRUE")
+    Optional<Vacuum> findByIdLocking(@Param("id") Long id);
 
     @Query("SELECT v FROM Vacuum v WHERE " +
             "(:name IS NULL OR v.name LIKE %:name%) AND " +
