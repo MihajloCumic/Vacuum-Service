@@ -8,12 +8,14 @@ import com.example.vacuum_service.entities.enums.VacuumStatus;
 import com.example.vacuum_service.mappers.VacuumDtoMapper;
 import com.example.vacuum_service.repository.VacuumRepository;
 import com.example.vacuum_service.service.AsyncVacuumActionService;
+import com.example.vacuum_service.service.ErrorMessageService;
 import com.example.vacuum_service.service.VacuumService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,6 +24,7 @@ public class VacuumServiceImpl implements VacuumService {
     private final VacuumRepository vacuumRepository;
     private final VacuumDtoMapper vacuumDtoMapper;
     private final AsyncVacuumActionService asyncVacuumActionService;
+    private final ErrorMessageService errorMessageService;
     @Override
     public List<VacuumDto> getAllVacuums() {
         return vacuumRepository.findAllByActiveTrue().stream().map(vacuumDtoMapper::vacuumToDto).collect(Collectors.toList());
@@ -57,22 +60,43 @@ public class VacuumServiceImpl implements VacuumService {
 
     @Transactional
     @Override
-    public void startVacuum(Long id) {
-        Vacuum vacuum = vacuumRepository.findByIdLocking(id).orElseThrow(() -> new RuntimeException("Vacuum with id: " + id + "does not exist."));
-        if(vacuum.getVacuumStatus() != VacuumStatus.STOPPED) throw new RuntimeException("Vacuum cannot be started because it is not STOPPED.");
+    public boolean startVacuum(Long id) {
+        Optional<Vacuum> vacuumOptional = vacuumRepository.findByIdLocking(id);
+        if(vacuumOptional.isEmpty()) return false;
+        Vacuum vacuum = vacuumOptional.get();
+        if(vacuum.getVacuumStatus() != VacuumStatus.STOPPED){
+            errorMessageService.createErrorMessage(vacuum, "Vacuum cannot be started because it is not STOPPED.");
+            return false;
+        }
         asyncVacuumActionService.startVacuumAsync(vacuum);
+        return true;
     }
 
     @Transactional
     @Override
-    public void stopVacuum(Long id) {
-        Vacuum vacuum = vacuumRepository.findByIdLocking(id).orElseThrow(() -> new RuntimeException("Vacuum with id: " + id + "does not exist."));
-        if(vacuum.getVacuumStatus() != VacuumStatus.RUNNING) throw new RuntimeException("Vacuum cannot be stopped because it is not RUNNING.");
+    public boolean stopVacuum(Long id) {
+        Optional<Vacuum> vacuumOptional = vacuumRepository.findByIdLocking(id);
+        if(vacuumOptional.isEmpty()) return false;
+        Vacuum vacuum = vacuumOptional.get();
+        if(vacuum.getVacuumStatus() != VacuumStatus.RUNNING){
+            errorMessageService.createErrorMessage(vacuum, "Vacuum cannot be stopped because it is not RUNNING.");
+            return false;
+        }
         asyncVacuumActionService.stopVacuumAsync(vacuum);
+        return true;
     }
 
+    @Transactional
     @Override
-    public void dischargeVacuum(Long id) {
-
+    public boolean dischargeVacuum(Long id) {
+        Optional<Vacuum> vacuumOptional = vacuumRepository.findByIdLocking(id);
+        if(vacuumOptional.isEmpty()) return false;
+        Vacuum vacuum = vacuumOptional.get();
+        if(vacuum.getVacuumStatus() != VacuumStatus.STOPPED){
+            errorMessageService.createErrorMessage(vacuum, "Vacuum cannot be disharged because it is not STOPPED.");
+            return false;
+        }
+        asyncVacuumActionService.dischargeVacuumAsync(vacuum);
+        return true;
     }
 }

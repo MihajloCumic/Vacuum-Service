@@ -11,7 +11,7 @@ public interface VacuumService {
     VacuumDto addVacuum(AddVacuumDto addVacuumDto);
     List<VacuumDto> searchVacuums(SearchParamsDto searchParamsDto);
     void removeVacuum(Long id);
-    void startVacuum(Long id);
-    void stopVacuum(Long id);
-    void dischargeVacuum(Long id);
+    boolean startVacuum(Long id);
+    boolean stopVacuum(Long id);
+    boolean dischargeVacuum(Long id);
 }

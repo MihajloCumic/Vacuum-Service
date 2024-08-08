@@ -19,7 +19,7 @@ public class AsyncVacuumActionServiceImpl implements AsyncVacuumActionService {
     @Override
     public void startVacuumAsync(Vacuum vacuum) {
         try {
-            Thread.sleep(10000);
+            Thread.sleep(15000);
             vacuum.setVacuumStatus(VacuumStatus.RUNNING);
             vacuumRepository.save(vacuum);
         } catch (InterruptedException e) {
@@ -32,7 +32,22 @@ public class AsyncVacuumActionServiceImpl implements AsyncVacuumActionService {
     @Override
     public void stopVacuumAsync(Vacuum vacuum) {
         try {
-            Thread.sleep(10000);
+            Thread.sleep(15000);
+            vacuum.setVacuumStatus(VacuumStatus.STOPPED);
+            vacuumRepository.save(vacuum);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Async
+    @Transactional
+    @Override
+    public void dischargeVacuumAsync(Vacuum vacuum) {
+        try {
+            Thread.sleep(15000);
+            vacuum.setVacuumStatus(VacuumStatus.DISCHARGING);
+            Thread.sleep(15000);
             vacuum.setVacuumStatus(VacuumStatus.STOPPED);
             vacuumRepository.save(vacuum);
         } catch (InterruptedException e) {

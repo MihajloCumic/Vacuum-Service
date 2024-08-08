@@ -18,11 +18,12 @@ import java.util.stream.Collectors;
 public class ErrorMessageServiceImpl implements ErrorMessageService {
     private final ErrorMessageRepository errorMessageRepository;
     private final ErrorMessageDtoMapper errorMessageDtoMapper;
+    private final VacuumRepository vacuumRepository;
 
     @Override
     public List<ErrorMessageDto> getAllErrorsForVacuum(Long id) {
-
-        return errorMessageRepository.findAllByVacuumId(id)
+        Vacuum vacuum = vacuumRepository.findById(id).orElseThrow(() -> new RuntimeException("No vacuum with id: " + id));
+        return errorMessageRepository.findAllByVacuum(vacuum)
                 .stream()
                 .map(errorMessageDtoMapper::errorMessageToDto)
                 .collect(Collectors.toList());
@@ -33,6 +34,8 @@ public class ErrorMessageServiceImpl implements ErrorMessageService {
         ErrorMessage errorMessage = new ErrorMessage();
         errorMessage.setVacuum(vacuum);
         errorMessage.setMessage(message);
+        System.out.println(message);
         errorMessageRepository.save(errorMessage);
+        System.out.println("sacuvano");
     }
 }
