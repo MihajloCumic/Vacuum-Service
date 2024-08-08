@@ -34,8 +34,6 @@ public class ErrorMessageServiceImpl implements ErrorMessageService {
         ErrorMessage errorMessage = new ErrorMessage();
         errorMessage.setVacuum(vacuum);
         errorMessage.setMessage(message);
-        System.out.println(message);
         errorMessageRepository.save(errorMessage);
-        System.out.println("sacuvano");
     }
 }

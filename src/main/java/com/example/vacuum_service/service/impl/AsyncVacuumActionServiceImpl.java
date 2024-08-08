@@ -17,11 +17,13 @@ public class AsyncVacuumActionServiceImpl implements AsyncVacuumActionService {
     @Async
     @Transactional
     @Override
-    public void startVacuumAsync(Vacuum vacuum) {
+    public void startVacuumAsync(Long id) {
+        Vacuum vacuum = vacuumRepository.findByIdLocking(id).orElseThrow(() -> new RuntimeException("No such id."));
         try {
             Thread.sleep(15000);
             vacuum.setVacuumStatus(VacuumStatus.RUNNING);
             vacuumRepository.save(vacuum);
+            System.out.println("Sacuvao START");
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -30,11 +32,13 @@ public class AsyncVacuumActionServiceImpl implements AsyncVacuumActionService {
     @Async
     @Transactional
     @Override
-    public void stopVacuumAsync(Vacuum vacuum) {
+    public void stopVacuumAsync(Long id) {
+        Vacuum vacuum = vacuumRepository.findByIdLocking(id).orElseThrow(() -> new RuntimeException("No such id."));
         try {
             Thread.sleep(15000);
             vacuum.setVacuumStatus(VacuumStatus.STOPPED);
             vacuumRepository.save(vacuum);
+            System.out.println("Sacuvao STOP");
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -43,13 +47,16 @@ public class AsyncVacuumActionServiceImpl implements AsyncVacuumActionService {
     @Async
     @Transactional
     @Override
-    public void dischargeVacuumAsync(Vacuum vacuum) {
+    public void dischargeVacuumAsync(Long id) {
+        Vacuum vacuum = vacuumRepository.findByIdLocking(id).orElseThrow(() -> new RuntimeException("No such id."));
         try {
             Thread.sleep(15000);
             vacuum.setVacuumStatus(VacuumStatus.DISCHARGING);
+            vacuumRepository.save(vacuum);
             Thread.sleep(15000);
             vacuum.setVacuumStatus(VacuumStatus.STOPPED);
             vacuumRepository.save(vacuum);
+            System.out.println("Sacuvao DISCHARGE");
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }

@@ -63,12 +63,13 @@ public class VacuumServiceImpl implements VacuumService {
     public boolean startVacuum(Long id) {
         Optional<Vacuum> vacuumOptional = vacuumRepository.findByIdLocking(id);
         if(vacuumOptional.isEmpty()) return false;
+        System.out.println("Proso lock START");
         Vacuum vacuum = vacuumOptional.get();
         if(vacuum.getVacuumStatus() != VacuumStatus.STOPPED){
             errorMessageService.createErrorMessage(vacuum, "Vacuum cannot be started because it is not STOPPED.");
             return false;
         }
-        asyncVacuumActionService.startVacuumAsync(vacuum);
+        asyncVacuumActionService.startVacuumAsync(id);
         return true;
     }
 
@@ -77,12 +78,13 @@ public class VacuumServiceImpl implements VacuumService {
     public boolean stopVacuum(Long id) {
         Optional<Vacuum> vacuumOptional = vacuumRepository.findByIdLocking(id);
         if(vacuumOptional.isEmpty()) return false;
+        System.out.println("Proso lock STOP");
         Vacuum vacuum = vacuumOptional.get();
         if(vacuum.getVacuumStatus() != VacuumStatus.RUNNING){
             errorMessageService.createErrorMessage(vacuum, "Vacuum cannot be stopped because it is not RUNNING.");
             return false;
         }
-        asyncVacuumActionService.stopVacuumAsync(vacuum);
+        asyncVacuumActionService.stopVacuumAsync(id);
         return true;
     }
 
@@ -91,12 +93,13 @@ public class VacuumServiceImpl implements VacuumService {
     public boolean dischargeVacuum(Long id) {
         Optional<Vacuum> vacuumOptional = vacuumRepository.findByIdLocking(id);
         if(vacuumOptional.isEmpty()) return false;
+        System.out.println("Proso lock DISCHARGE");
         Vacuum vacuum = vacuumOptional.get();
         if(vacuum.getVacuumStatus() != VacuumStatus.STOPPED){
-            errorMessageService.createErrorMessage(vacuum, "Vacuum cannot be disharged because it is not STOPPED.");
+            errorMessageService.createErrorMessage(vacuum, "Vacuum cannot be discharged because it is not STOPPED.");
             return false;
         }
-        asyncVacuumActionService.dischargeVacuumAsync(vacuum);
+        asyncVacuumActionService.dischargeVacuumAsync(id);
         return true;
     }
 }
