@@ -24,7 +24,7 @@ public class JwtUtil {
         return extracAllClaims(token).getSubject();
     }
     public List<String> extreactPrivileges(String token){
-        return extracAllClaims(token).get("privileges", List.class);
+        return extracAllClaims(token).get("authorization", List.class);
     }
     public boolean isTokenExpired(String token){
         return extracAllClaims(token).getExpiration().before(new Date());
