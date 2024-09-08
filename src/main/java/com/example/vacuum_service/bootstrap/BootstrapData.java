@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 @Component
 @RequiredArgsConstructor
@@ -23,11 +22,13 @@ public class BootstrapData implements CommandLineRunner {
             names.add("vacuum-" + i);
         }
 
-        Random random = new Random();
+        int cnt = 1;
         for(String name: names){
             Vacuum vacuum = new Vacuum();
             vacuum.setName(name);
-            vacuum.setAddedBy((long) (random.nextInt(3) + 1));
+            if(cnt % 2 == 0) vacuum.setAddedBy("user1@gmail.com");
+            else vacuum.setAddedBy("user2@gmail.com");
+            cnt++;
             vacuum.setVacuumStatus(VacuumStatus.STOPPED);
             vacuum.setActive(true);
             vacuumRepository.save(vacuum);

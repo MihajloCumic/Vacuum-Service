@@ -9,5 +9,7 @@ import java.util.List;
 public interface ErrorMessageService {
 
     List<ErrorMessageDto> getAllErrorsForVacuum(Long id);
+    List<ErrorMessageDto> getAllForUser(String email);
     void createErrorMessage(Vacuum vacuum, String message);
+
 }

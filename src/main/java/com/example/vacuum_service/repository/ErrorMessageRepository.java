@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface ErrorMessageRepository extends JpaRepository<ErrorMessage, Long> {
     List<ErrorMessage> findAllByVacuum(Vacuum vacuum);
+    List<ErrorMessage> findAllByVacuumAddedBy(String addedBy);
 }

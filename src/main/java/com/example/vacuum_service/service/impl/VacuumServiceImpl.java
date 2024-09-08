@@ -15,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,35 +23,36 @@ public class VacuumServiceImpl implements VacuumService {
     private final VacuumRepository vacuumRepository;
     private final VacuumDtoMapper vacuumDtoMapper;
     private final AsyncVacuumActionService asyncVacuumActionService;
-    private final ErrorMessageService errorMessageService;
     @Override
-    public List<VacuumDto> getAllVacuums() {
-        return vacuumRepository.findAllByActiveTrue().stream().map(vacuumDtoMapper::vacuumToDto).collect(Collectors.toList());
+    public List<VacuumDto> getAllVacuums(String email) {
+        return vacuumRepository.findAllByAddedByAndActiveTrue(email).stream().map(vacuumDtoMapper::vacuumToDto).collect(Collectors.toList());
     }
 
     @Override
-    public VacuumDto addVacuum(AddVacuumDto addVacuumDto) {
+    public VacuumDto addVacuum(AddVacuumDto addVacuumDto, String addedBy) {
         Vacuum vacuum = new Vacuum();
         vacuum.setName(addVacuumDto.getName());
         vacuum.setVacuumStatus(VacuumStatus.STOPPED);
-        vacuum.setAddedBy(1L);
+        vacuum.setAddedBy(addedBy);
         vacuum.setActive(true);
         return vacuumDtoMapper.vacuumToDto(vacuumRepository.save(vacuum));
     }
 
     @Override
-    public List<VacuumDto> searchVacuums(SearchParamsDto searchParamsDto) throws RuntimeException{
+    public List<VacuumDto> searchVacuums(SearchParamsDto searchParamsDto, String email) throws RuntimeException{
         if(searchParamsDto.getDateFrom() == null && searchParamsDto.getDateTo() != null) throw new RuntimeException("There must be dateFrom cannot be blank if dateTo has a value.");
         for(String status: searchParamsDto.getStatuses()){
             VacuumStatus.valueOf(status.toUpperCase());
         }
-        return vacuumRepository.searchVacuums(searchParamsDto.getName(), searchParamsDto.getStatuses(), searchParamsDto.getDateFrom(), searchParamsDto.getDateTo())
+        return vacuumRepository.searchVacuums(searchParamsDto.getName(), searchParamsDto.getStatuses(), searchParamsDto.getDateFrom(), searchParamsDto.getDateTo(), email)
                 .stream().map(vacuumDtoMapper::vacuumToDto).collect(Collectors.toList());
     }
 
+    @Transactional
     @Override
-    public void removeVacuum(Long id) {
-        Vacuum vacuum = vacuumRepository.findByIdAndActiveTrue(id).orElseThrow(() -> new RuntimeException("Vacuum with id: " + id + "does not exist."));
+    public void removeVacuum(Long id, String email) {
+        Vacuum vacuum = vacuumRepository.findByIdLocking(id).orElseThrow(() -> new RuntimeException("Vacuum with id: " + id + "does not exist."));
+        if(!vacuum.getAddedBy().equals(email)) throw new RuntimeException("Vacuum ownership error.");
         if(vacuum.getVacuumStatus() != VacuumStatus.STOPPED) throw new RuntimeException("Vacuum cannot be removed, because it is not STOPPED.");
         vacuum.setActive(false);
         vacuumRepository.save(vacuum);
@@ -61,29 +61,14 @@ public class VacuumServiceImpl implements VacuumService {
     @Transactional
     @Override
     public boolean startVacuum(Long id) {
-        Optional<Vacuum> vacuumOptional = vacuumRepository.findByIdLocking(id);
-        if(vacuumOptional.isEmpty()) return false;
-        System.out.println("Proso lock START");
-        Vacuum vacuum = vacuumOptional.get();
-        if(vacuum.getVacuumStatus() != VacuumStatus.STOPPED){
-            errorMessageService.createErrorMessage(vacuum, "Vacuum cannot be started because it is not STOPPED.");
-            return false;
-        }
         asyncVacuumActionService.startVacuumAsync(id);
         return true;
+
     }
 
     @Transactional
     @Override
     public boolean stopVacuum(Long id) {
-        Optional<Vacuum> vacuumOptional = vacuumRepository.findByIdLocking(id);
-        if(vacuumOptional.isEmpty()) return false;
-        System.out.println("Proso lock STOP");
-        Vacuum vacuum = vacuumOptional.get();
-        if(vacuum.getVacuumStatus() != VacuumStatus.RUNNING){
-            errorMessageService.createErrorMessage(vacuum, "Vacuum cannot be stopped because it is not RUNNING.");
-            return false;
-        }
         asyncVacuumActionService.stopVacuumAsync(id);
         return true;
     }
@@ -91,14 +76,6 @@ public class VacuumServiceImpl implements VacuumService {
     @Transactional
     @Override
     public boolean dischargeVacuum(Long id) {
-        Optional<Vacuum> vacuumOptional = vacuumRepository.findByIdLocking(id);
-        if(vacuumOptional.isEmpty()) return false;
-        System.out.println("Proso lock DISCHARGE");
-        Vacuum vacuum = vacuumOptional.get();
-        if(vacuum.getVacuumStatus() != VacuumStatus.STOPPED){
-            errorMessageService.createErrorMessage(vacuum, "Vacuum cannot be discharged because it is not STOPPED.");
-            return false;
-        }
         asyncVacuumActionService.dischargeVacuumAsync(id);
         return true;
     }

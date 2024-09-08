@@ -15,13 +15,16 @@ import java.util.Optional;
 public interface VacuumRepository extends JpaRepository<Vacuum, Long> {
 
     List<Vacuum> findAllByActiveTrue();
+    List<Vacuum> findAllByAddedByAndActiveTrue(String addedBy);
     Optional<Vacuum> findByIdAndActiveTrue(Long id);
+    Optional<Vacuum> findByIdAndAddedByAndActiveTrue(Long id, String addedBy);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT v FROM Vacuum v WHERE v.id = :id AND v.active IS TRUE")
     Optional<Vacuum> findByIdLocking(@Param("id") Long id);
 
     @Query("SELECT v FROM Vacuum v WHERE " +
+            "(v.addedBy = :addedBy) AND" +
             "(:name IS NULL OR v.name LIKE %:name%) AND " +
             "(:statuses IS NULL OR v.vacuumStatus IN :statuses) AND " +
             "(:dateFrom IS NULL OR v.createdTimestamp >= :dateFrom) AND " +
@@ -30,5 +33,6 @@ public interface VacuumRepository extends JpaRepository<Vacuum, Long> {
     List<Vacuum> searchVacuums(@Param("name") String name,
                                @Param("statuses") List<String> statuses,
                                @Param("dateFrom") Long dateFrom,
-                               @Param("dateTo") Long dateTo);
+                               @Param("dateTo") Long dateTo,
+                                @Param("addedBy") String addedBy);
 }

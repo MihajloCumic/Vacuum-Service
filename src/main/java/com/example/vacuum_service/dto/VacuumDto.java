@@ -13,7 +13,7 @@ public class VacuumDto {
     private Long id;
     private String name;
     private VacuumStatus vacuumStatus;
-    private Long addedBy;
+    private String addedBy;
     private Boolean active;
     private Long createdTimestamp;
     private Integer startStopCount;

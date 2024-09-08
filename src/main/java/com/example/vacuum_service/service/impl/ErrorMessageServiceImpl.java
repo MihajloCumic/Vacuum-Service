@@ -30,6 +30,14 @@ public class ErrorMessageServiceImpl implements ErrorMessageService {
     }
 
     @Override
+    public List<ErrorMessageDto> getAllForUser(String email) {
+        return errorMessageRepository.findAllByVacuumAddedBy(email)
+                .stream()
+                .map(errorMessageDtoMapper::errorMessageToDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public void createErrorMessage(Vacuum vacuum, String message) {
         ErrorMessage errorMessage = new ErrorMessage();
         errorMessage.setVacuum(vacuum);

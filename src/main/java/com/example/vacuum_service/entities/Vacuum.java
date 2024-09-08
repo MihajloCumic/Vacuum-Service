@@ -7,7 +7,6 @@ import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.Instant;
 
 @Data
 @Entity
@@ -24,7 +23,8 @@ public class Vacuum {
     private VacuumStatus vacuumStatus;
 
     @Column(nullable = false)
-    private Long addedBy;
+    @NotBlank
+    private String addedBy;
 
     @Column(nullable = false)
     private Boolean active;
@@ -32,5 +32,5 @@ public class Vacuum {
     @CreatedDate
     private Long createdTimestamp;
 
-    private Integer startStopCount = 1;
+    private Integer startStopCount = 0;
 }
