@@ -58,7 +58,8 @@ Failed operations are logged in a new table (`ErrorMessage`), which records:
   - Scheduled operation
   - Error message
 
-### Frontend Implementation
+### Frontend
+#### Frontend repository can be found [here](https://github.com/MihajloCumic/Vacuum-Service-Frontend). 
 
 - **Vacuum Search Page**: Displays all the user's vacuum cleaners using the SEARCH operation. A filter form allows users to refine the search results by name, status, and date range.
   
