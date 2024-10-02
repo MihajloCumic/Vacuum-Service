@@ -7,7 +7,7 @@ This project aims to implement a web application that simulates the management o
 
 The project is divided into the following main components:
 
-1. **User Management**: Managing user accounts and permissions is handled by a separate repository. You can find the User Management System [here]([https://github.com/your-username/user-management-system](https://github.com/MihajloCumic/User-Managment-System)). 
+1. **User Management**: Managing user accounts and permissions is handled by a separate repository. You can find the User Management System [here]([https://github.com/your-username/user-management-system]). 
    - Users can only interact with vacuum cleaners that they added to the system. 
 2. **Vacuum Management**: Managing vacuum cleaner robots, their states, and scheduling operations like starting, stopping, and discharging.
 
