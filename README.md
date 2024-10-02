@@ -42,15 +42,6 @@ Each user has specific permissions to perform certain actions on the vacuum clea
 
 - **Scheduled Operations**: Users can schedule START, STOP, or DISCHARGE operations for a future date and time. If the operation fails, an error message is logged.
 
-### Requirements
-
-- **Backend**:
-  - Spring or JBoss
-  - Relational Database
-
-- **Frontend**:
-  - Angular 2+
-
 ### Vacuum Cleaner States and Operations
 
 - **START**: A vacuum cleaner can only be started if it's in the STOPPED state. The operation takes 15+ seconds to complete and switches the vacuum's state to RUNNING.
